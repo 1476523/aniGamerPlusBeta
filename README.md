@@ -1,6 +1,6 @@
 # aniGamerPlus（客製強化版）
 
-> 以官方 [miyouzi/aniGamerPlus v24.6](https://github.com/miyouzi/aniGamerPlus/releases/tag/v24.6) 原始碼為基準的客製修改版本，目前版本為 **v25.1.3**。
+> 以官方 [miyouzi/aniGamerPlus v24.6](https://github.com/miyouzi/aniGamerPlus/releases/tag/v24.6) 原始碼為基準的客製修改版本，目前版本為 **v25.1.4**。
 > 本文件整理與官方 v24.6 的完整功能差異、新功能用法與好處，以及修正的 BUG／缺陷，方便使用者評估是否要切換使用。
 
 官方 v24.6 之後（v24.7 ~ v25.0）自行發布的其他更新內容不包含在本次比較範圍內，以下僅列出**本客製版**相對於 **v24.6** 的變更。
@@ -55,6 +55,68 @@
 | 未設密碼時的警告 | 面板開放外部訪問但未啟用密碼保護時，啟動時主動顯示警告 | 提醒使用者避免面板在無密碼保護下直接暴露在公網 |
 | 「下載雙語版本」開關 | 手動新增任務時勾選（預設關閉） | 開啟後可排除中文配音／中文電影等額外語言版本，避免重複下載不需要的語言版本，節省儲存空間與頻寬 |
 | 任務進度條更新頻率優化 | 無需操作 | WebSocket 推送頻率由 1 秒優化為 0.3 秒，進度顯示更即時、不再有卡頓感 |
+| 修繕早期網頁文件：自訂登入頁 | `login.html`／`register.html` 原本是專案裡從未被路由接上的早期遺留文件，密碼保護實際上一直是瀏覽器原生 HTTP Basic Auth 彈出視窗；開啟 `dashboard.BasicAuth` 後訪問面板會導向真正接上功能的自訂登入頁輸入帳號密碼（沿用 `dashboard.username`／`dashboard.password`），登入狀態以 session 保存 | 取代原本瀏覽器原生彈出的 HTTP Basic Auth 視窗，體驗更一致；登入狀態伺服器端保存，重啟程式不會被強制登出 |
+| 完善早期代碼：Discord／Telegram 通知設定頁 | Discord／Telegram 通知的推送邏輯本來就是早期就寫好的功能，但 Dashboard 網頁一直沒有對應設定介面，只能手動編輯 `config.json`；這次補上「通知設定」區塊，可直接開關並填寫 Bot Token／Chat ID／Webhook URL | 不用再手動編輯 `config.json`；Token/Webhook 等敏感欄位採遮罩顯示，不會在網頁明文回顯 |
+| 取得當前新番更新時間 | 「其他」區塊按鈕，線上查詢 sn_list.txt 各作品最新 3 集的上架時間，換算成候選星期＋時間供逐項選擇套用／自訂／跳過 | 不用再手動推算連載新番的固定更新時段，自動排程功能設定更省力 |
+| 資料庫整頓 | 「其他」區塊按鈕，重新線上解析各作品名稱後清除 `aniGamer.db` 中不再追蹤的舊紀錄 | 清理資料庫殘留資料，且解析失敗時會整個中止不刪除，避免誤刪仍在追蹤的作品 |
+| 任務監控頁導覽列補齊 | 無需操作，導覽列補上 sn_list、添加手動任務兩個項目，並修正一個連到不存在彈窗的死連結，也修正了跟「自動模式設定」頁字體大小比例不一致的問題 | 跟「自動模式設定」頁一致，不用切回設定頁才能操作這兩項功能 |
+| ja3/akamai 自動相容性檢測與修正 | 無需操作，程式啟動與 Dashboard 存檔自訂 ja3/akamai 時自動檢測並修正其中會讓 `curl_cffi` 崩潰的 TLS 擴展編號（例如新版瀏覽器常見的擴展 41） | 避免新版瀏覽器採集到的指紋讓下載任務直接失敗；連請求當下才發生的極端情況也有自動退回內建指紋重試的防護 |
+| 登出穩定性修正 | 無需操作，登出改成只有請求真正成功才跳轉頁面 | 修正透過反向代理／Cloudflare Tunnel 對外開放時，登出按鈕可能因為請求被中間層擋下而「按了沒反應」的問題 |
+| Dashboard 靜態資源快取破壞 | 無需操作，CSS/JS 資源網址自動帶上版本號查詢字串 | 透過 Cloudflare 等會依副檔名快取靜態資源的服務對外開放時，更新版本後不用再手動去後台清快取，瀏覽器與邊緣節點會自動抓到最新檔案 |
+| 修正偵測不到 Dashboard 資料夾時整支程式崩潰 | 無需操作，`Config.py` 內部處理設定的兩個函式不再共用同一個 dict 物件 | 修正只複製 `.exe` 忘記一併帶 `Dashboard` 資料夾時，程式會因為內部設定物件互相污染、`working_dir` 等欄位被誤刪而直接 `KeyError` 崩潰、完全無法啟動的問題 |
+
+#### Dashboard 畫面截圖（v25.1.4）
+
+<table>
+<tr>
+<td width="50%">
+
+**自訂登入頁**（取代原本瀏覽器彈出的 HTTP Basic Auth 視窗）
+
+<img src="screenshot/v25.1.4_login.png" width="100%">
+
+</td>
+<td width="50%">
+
+**通知設定**（Telegram／Discord，取代手動編輯 config.json）
+
+<img src="screenshot/v25.1.4_notify_settings.png" width="100%">
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+**Cookie／ja3／akamai 指紋設定**（新增可直接編輯的 Cookie 欄位）
+
+<img src="screenshot/v25.1.4_cookie_ja3.png" width="100%">
+
+</td>
+<td width="50%">
+
+**「其他」工具**：取得當前新番更新時間／資料庫整頓／讀取其他版本設定檔
+
+<img src="screenshot/v25.1.4_other_tools.png" width="100%">
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+**手動任務新增「掃描集數」**（可逐集勾選要下載的項目，取代下拉選單模式）
+
+<img src="screenshot/v25.1.4_manual_task.png" width="100%">
+
+</td>
+<td width="50%">
+
+**取得當前新番更新時間**：執行前會清楚說明行為並二次確認
+
+<img src="screenshot/v25.1.4_schedule_scan_confirm.png" width="100%">
+
+</td>
+</tr>
+</table>
 
 ### 5. 打包與部署
 
@@ -85,6 +147,7 @@
 - **v25.1.1**：curl_cffi 連線架構、錯誤處理強化、檔名清理、sn_list.txt 排程功能、Web 面板安全性與體驗優化（[詳細內容](RELEASE_NOTES_v25.1.1.md)）
 - **v25.1.2**：新增 `ja3` / `akamai` 自訂指紋支援（[詳細內容](RELEASE_NOTES_v25.1.2.md)）
 - **v25.1.3**：Dashboard 設定存檔顯示同步修正、ja3/akamai 欄位改為遮罩顯示、自訂排程重啟補檢查邏輯修正（[詳細內容](RELEASE_NOTES_v25.1.3.md)）
+- **v25.1.4**：修繕早期就存在但從未接上功能的 Dashboard 登入網頁、完善早期就寫好卻沒有設定介面的 Discord／Telegram 通知、新增取得新番更新時間與資料庫整頓功能、移除 Plex 通知代碼與功能（[詳細內容](RELEASE_NOTES_v25.1.4.md)）
 
 ---
 
