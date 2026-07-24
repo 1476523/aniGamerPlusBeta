@@ -100,9 +100,9 @@
 </td>
 <td width="50%">
 
-**「其他」工具**：取得當前新番更新時間／資料庫整頓／讀取其他版本設定檔
+**「其他」工具**：取得當前新番更新時間／資料庫整頓／重新檢查所有排程更新（v25.1.5 新增）／讀取其他版本設定檔
 
-<img src="screenshot/v25.1.4_other_tools.png" width="100%">
+<img src="screenshot/v25.1.5_other_tools.png" width="100%">
 
 </td>
 </tr>
