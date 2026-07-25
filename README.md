@@ -126,6 +126,22 @@
 <tr>
 <td width="50%">
 
+**取得當前新番更新時間**：查詢進度（依序對 sn_list.txt 每個項目發線上查詢）
+
+<img src="screenshot/v25.1.4_schedule_scan_progress.png" width="100%">
+
+</td>
+<td width="50%">
+
+**取得當前新番更新時間**：分析結果（實際查詢到的真實上架時間，可逐項選擇候選時段、自訂或跳過）
+
+<img src="screenshot/v25.1.4_schedule_scan_result.png" width="100%">
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
 **重新檢查所有排程更新**：執行前明確告知會暫停所有排程檢查直到下載完成（v25.1.5）
 
 <img src="screenshot/v25.1.5_full_recheck_confirm.png" width="100%">
