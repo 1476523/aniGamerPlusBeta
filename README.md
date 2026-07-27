@@ -41,7 +41,7 @@
 
 </details>
 
-<details>
+<details id="sn-list-schedule">
 <summary><strong>3. `sn_list.txt` 排程功能強化</strong></summary>
 
 新增**自訂星期／時間排程**語法，格式為 `*星期* $HH:MM$`，兩者必須同時填寫才生效，例如：
