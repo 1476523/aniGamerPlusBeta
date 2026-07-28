@@ -4,11 +4,13 @@
 
 # aniGamerPlus（客製強化版）
 
-> 以官方 [miyouzi/aniGamerPlus v24.6](https://github.com/miyouzi/aniGamerPlus/releases/tag/v24.6) 原始碼為基準的客製修改版本，目前版本為 **v25.1.8**。
+> 以官方 [miyouzi/aniGamerPlus v24.6](https://github.com/miyouzi/aniGamerPlus/releases/tag/v24.6) 原始碼為基準的客製修改版本，目前版本為 **v25.1.9**。
 > 本文件整理與官方 v24.6 的完整功能差異、新功能用法與好處，以及修正的 BUG／缺陷，方便使用者評估是否要切換使用。
 
 官方 v24.6 之後自行發布的其他更新內容不包含在本次比較範圍內，以下僅列出**本客製版**相對於 **v24.6** 的變更。
 
+> 📖 **想了解 v25.1.9 新增的「通知模板自訂／發送歷史」怎麼用？** 請參閱 [使用教學：通知模板自訂與發送歷史](USAGE_GUIDE_v25.1.9.md)。
+> 
 > 📖 **第一次使用，或想了解 v25.1.8 起設定改存進 `aniGamer.db` 資料庫後該怎麼操作？** 請參閱 [使用教學：aniGamer.db 資料庫化設定完整指南](USAGE_GUIDE_v25.1.8.md)，內含新使用者上手步驟、舊使用者升級須知，以及如何匯出設定改回官方版。
 
 ---
@@ -98,179 +100,216 @@
 | **通知類別開關**（v25.1.8 新增） | 「設定」→「通知設定」→「通知類別」：Telegram／Discord 共用同一組「哪些事件要推播」開關，涵蓋下載完成/失敗(區分手動任務與排程任務)、監視公告事件(停止/延後/加更/其他)、系統事件(Cookie失效/裝置驗證異常/新版本)，共 11 項可獨立開關 | v24.6 只有「開/關」Telegram 或 Discord 兩個開關，只要開啟就會收到所有種類通知；本版可依需求只保留想看的事件通知，避免通知過多變成噪音 |
 | **Telegram／Discord 測試工具**（v25.1.8 新增） | Telegram 區塊「發送測試訊息」／「取得Chat ID」按鈕、Discord 區塊「發送測試訊息」按鈕：可用輸入框裡「尚未儲存」的 Token/Webhook 直接測試 | 不用先存檔、等到真的有下載完成才知道 Token/Webhook 有沒有設定對；自動偵測到的 Chat ID 會直接記住並切換為手動模式，之後不需每次都重新查詢 |
 | **啟動緊急修復機制**（v25.1.8 新增） | 無需操作，Web 控制面板啟動時偵測到 port 被佔用，會在程式資料夾自動產生 `emergency_fix.txt`，用記事本打開依說明修改 `dashboard_port` 後重啟即自動套用並刪除該檔案 | 設定改存進 `aniGamer.db` 後一般使用者無法直接開 SQLite 資料庫修改；這個機制讓「port 被佔用」這類啟動異常仍可以不求助任何工具、單靠記事本自行排除 |
+| **通知模板自訂**（v25.1.9 新增） | 「設定」→「通知設定」→「通知模板」：11 種通知類別（下載完成/失敗、公告事件、系統事件）都能自訂實際發送的文字內容，Telegram 版可用格式標籤（粗體/斜體/程式碼/引用/超連結/防劇透等），儲存時自動轉換成對應的 Discord Markdown 語法；文字中可插入 `@animation_name@`／`@episode@` 等通用字符帶入動態內容；「預覽」可即時模擬 Telegram 訊息氣泡與 Discord 嵌入卡片外觀 | v24.6 及本客製版 v25.1.8 以前，通知文字都是寫死在程式碼裡的固定格式，無法客製化措辭或格式；本功能只需維護一份 Telegram 模板即可同時套用到兩個管道，不用手動維護兩份語法不同的文字 |
+| **通知發送歷史**（v25.1.9 新增） | Telegram／Discord 通知設定區塊「查看發送歷史」按鈕，可依類別/子類別篩選，顯示每則通知實際發送的內容、時間與成功/失敗結果（失敗附錯誤原因） | 通知沒收到時可直接查歷史紀錄判斷是「該類別開關關閉」「送出失敗」還是「其實有送出成功」，不用憑印象猜測或重新觸發一次事件測試 |
+| **設定頁控制項寬度統一／導覽列置中／通知測試結果改用彈窗**（v25.1.9 新增） | 無需操作，「設定」頁開關/下拉選單改用 flex 版面統一計算寬度；導覽列在「設定」「任務」頁改為置中對齊頁面內容寬度；Telegram/Discord「發送測試訊息」「取得Chat ID」的結果改用自訂彈窗顯示 | 修正過去不同欄位開關寬度/間距略有落差、導覽列靠左對齊與頁面內容留白不對稱的問題；瀏覽器原生 `alert()` 彈窗風格與其餘頁面不一致，改用彈窗後視覺統一 |
 
 <details>
 <summary><strong>Dashboard 畫面截圖</strong></summary>
 
-> 以下全部為 v25.1.8 重新擷取的最新畫面；標註「vX.X.X 新增」的是該版本新增的功能，其餘則是既有功能在目前版本下的實際畫面。
+> 以下全部為 v25.1.9 重新擷取的最新畫面；標註「vX.X.X 新增」的是該版本新增的功能，其餘則是既有功能在目前版本下的實際畫面。
 
 <table>
 <tr>
 <td width="50%">
 
-**自訂登入頁**（取代原本瀏覽器彈出的 HTTP Basic Auth 視窗；品牌標題為 v25.1.7 新增）
+**自訂登入頁**（取代原本瀏覽器彈出的 HTTP Basic Auth 視窗）
 
-<img src="screenshot/v25.1.7_login.png" width="100%">
-
-</td>
-<td width="50%">
-
-**路徑設定**：導覽列品牌重新設計＋「下載目錄」「暫存目錄」旁新增「瀏覽...」按鈕（皆為 v25.1.7 新增）
-
-<img src="screenshot/v25.1.7_path_settings.png" width="100%">
-
-</td>
-</tr>
-<tr>
-<td width="50%">
-
-**目錄瀏覽器**（v25.1.7 新增）：點擊「瀏覽...」後逐層瀏覽伺服器端資料夾並選定路徑，取代手動輸入
-
-<img src="screenshot/v25.1.7_dir_browser.png" width="100%">
+<img src="screenshot/v25.1.9_login.png" width="100%">
 
 </td>
 <td width="50%">
 
-**設定頁摺疊收納**（v25.1.7 新增）：「代理設定」「通知設定」「其他」預設收合，點標題展開，畫面更精簡
+**路徑設定＋下載設定**：導覽列置中對齊頁面內容寬度，開關/下拉選單控制項寬度統一（皆為 v25.1.9 調整）
 
-<img src="screenshot/v25.1.7_settings_collapsed.png" width="100%">
+<img src="screenshot/v25.1.9_settings_collapsed.png" width="100%">
 
 </td>
 </tr>
 <tr>
 <td width="50%">
 
-**通知類別開關**（v25.1.8 新增）：Telegram／Discord 共用同一組「哪些事件要推播」開關，下載/公告/系統三大類共 11 項
+**目錄瀏覽器**：點擊「瀏覽...」後逐層瀏覽伺服器端資料夾並選定路徑，取代手動輸入
 
-<img src="screenshot/v25.1.8_notify_categories.png" width="100%">
-
-</td>
-<td width="50%">
-
-**Telegram／Discord 通知設定**（取代手動編輯 config.json；「發送測試訊息」「取得Chat ID」按鈕為 v25.1.8 新增）
-
-<img src="screenshot/v25.1.4_notify_settings.png" width="100%">
-
-</td>
-</tr>
-<tr>
-<td width="50%">
-
-**Cookie／UA／JA3／Akamai 指紋設定**：欄位精簡置中排版＋「快速取得」按鈕（皆為 v25.1.8 新增）
-
-<img src="screenshot/v25.1.4_cookie_ja3.png" width="100%">
+<img src="screenshot/v25.1.9_dir_browser.png" width="100%">
 
 </td>
 <td width="50%">
 
-**快速取得 Cookie**（v25.1.8 新增）：開啟獨立瀏覽器視窗登入後，按控制面板按鈕自動填回欄位
+**下載設定控制項寬度統一**（v25.1.9 調整）：開關與下拉選單改用 flex 版面計算寬度，取代不穩定的表格自動排版
 
-<img src="screenshot/v25.1.8_quick_fetch_progress.png" width="100%">
+<img src="screenshot/v25.1.9_download_settings.png" width="100%">
 
 </td>
 </tr>
 <tr>
 <td width="50%">
 
-**「其他」工具**：取得當前新番更新時間／資料庫整頓／「匯出設定與排程檔」（v25.1.8 新增）／重新檢查所有排程更新／監視公告與機動調整時間
+**Telegram／Discord 通知設定**（v25.1.9 調整順序，移到「通知類別」上方；各自新增「查看發送歷史」按鈕）
 
-<img src="screenshot/v25.1.6_other_tools.png" width="100%">
-
-</td>
-<td width="50%">
-
-**手動任務新增「掃描集數」**（可逐集勾選要下載的項目，取代下拉選單模式）
-
-<img src="screenshot/v25.1.4_manual_task.png" width="100%">
-
-</td>
-</tr>
-<tr>
-<td width="50%">
-
-**手動任務「更改名稱」**（原理與 sn_list.txt 的 `<重新命名>` 標籤相同）
-
-<img src="screenshot/v25.1.6_manual_rename.png" width="100%">
+<img src="screenshot/v25.1.9_telegram_discord_settings.png" width="100%">
 
 </td>
 <td width="50%">
 
-**掃描集數：大量集數自動摺疊**（超過 20 話自動分區摺疊，標題即時顯示已勾選數量）
+**通知類別開關**：Telegram／Discord 共用同一組「哪些事件要推播」開關，下載/公告/系統三大類共 11 項
 
-<img src="screenshot/v25.1.5_episode_scan_collapse.png" width="100%">
-
-</td>
-</tr>
-<tr>
-<td width="50%">
-
-**取得當前新番更新時間**：執行前會清楚說明行為並二次確認
-
-<img src="screenshot/v25.1.4_schedule_scan_confirm.png" width="100%">
-
-</td>
-<td width="50%">
-
-**取得當前新番更新時間**：查詢進度（依序對 sn_list.txt 每個項目發線上查詢）
-
-<img src="screenshot/v25.1.4_schedule_scan_progress.png" width="100%">
-
-</td>
-</tr>
-<tr>
-<td width="50%">
-
-**取得當前新番更新時間**：分析結果（實際查詢到的真實上架時間，可逐項選擇候選時段、自訂或跳過）
-
-<img src="screenshot/v25.1.4_schedule_scan_result.png" width="100%">
-
-</td>
-<td width="50%">
-
-**重新檢查所有排程更新**：執行前明確告知會暫停所有排程檢查直到下載完成
-
-<img src="screenshot/v25.1.5_full_recheck_confirm.png" width="100%">
-
-</td>
-</tr>
-<tr>
-<td width="50%">
-
-**重新檢查所有排程更新**：總進度條＋個別項目下載進度清單
-
-<img src="screenshot/v25.1.5_full_recheck_progress.png" width="100%">
-
-</td>
-<td width="50%">
-
-**資料庫整頓改為勾選候選清單**（掃描後列出候選項目讓使用者勾選確認才刪除，不會自動刪除）
-
-<img src="screenshot/v25.1.6_db_cleanup_checklist.png" width="100%">
+<img src="screenshot/v25.1.9_notify_categories.png" width="100%">
 
 </td>
 </tr>
 <tr>
 <td colspan="2">
 
-**手動批次下載進度視窗＋失敗清單重試**（v25.1.7 新增）：個別集數即時進度＋整體進度條，圖中同時示範「已完成／下載中／已暫停(排程下載優先處理中)／失敗重啓中／失敗已放棄／已取消」六種狀態；重試 3 次後最終放棄的集數會列在下方失敗清單，可個別「重試」或「重試所有失敗項目」，footer 另有「終止任務」按鈕可安全終止批次(進行中的那一集會正常跑完)
+**通知模板編輯器**（v25.1.9 新增）：11 種通知類別可自訂實際發送文字，格式標籤工具列與通用字符（token）按鈕皆一鍵插入（Telegram HTML 標籤自動轉換 Discord Markdown），詳細說明收進「可用通用字符說明」摺疊區塊；「模板測試」可用已儲存的模板實際發送一次，「恢復預設」一鍵退回內建文字
 
-<img src="screenshot/v25.1.7_manual_batch_progress.png" width="100%">
+<img src="screenshot/v25.1.9_notify_template_editor.png" width="100%">
 
 </td>
 </tr>
 <tr>
 <td width="50%">
 
-**手動任務「顯示目前工作」救援按鈕**（v25.1.7 新增）：有批次任務進行中時才會出現，可隨時重新叫出進度視窗（例如誤觸關閉、程式重啟、分頁意外關閉後）
+**通知預覽**（v25.1.9 新增）：不用先儲存也不用真的觸發事件，即可模擬 Telegram 訊息氣泡與 Discord 嵌入卡片外觀
 
-<img src="screenshot/v25.1.7_manual_task_resume_button.png" width="100%">
+<img src="screenshot/v25.1.9_notify_preview.png" width="100%">
 
 </td>
 <td width="50%">
 
-**排程下載插隊提示**（v25.1.7 新增）：手動批次任務進行中若排程檢查找到新更新，會優先處理排程下載，這個提示無法點掉，處理完成後自動收起
+**通知發送歷史**（v25.1.9 新增）：依類別/子類別篩選，顯示每則通知實際發送內容與成功/失敗結果
 
-<img src="screenshot/v25.1.7_schedule_priority.png" width="100%">
+<img src="screenshot/v25.1.9_notify_history.png" width="100%">
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+**通知測試結果改用彈窗**（v25.1.9 新增）：取代原本瀏覽器原生 `alert()`，「發送測試訊息」「取得Chat ID」結果改用自訂彈窗顯示
+
+<img src="screenshot/v25.1.9_notify_test_result.png" width="100%">
+
+</td>
+<td width="50%">
+
+**Cookie／UA／JA3／Akamai 指紋設定**：欄位精簡置中排版＋「快速取得」按鈕
+
+<img src="screenshot/v25.1.9_cookie_ja3.png" width="100%">
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+**快速取得 Cookie**：開啟獨立瀏覽器視窗登入後，按控制面板按鈕自動填回欄位
+
+<img src="screenshot/v25.1.9_quick_fetch_progress.png" width="100%">
+
+</td>
+<td width="50%">
+
+**「其他」工具**：取得當前新番更新時間／資料庫整頓／匯出設定與排程檔／重新檢查所有排程更新／監視公告與機動調整時間
+
+<img src="screenshot/v25.1.9_other_tools.png" width="100%">
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+**手動任務新增「掃描集數」**（可逐集勾選要下載的項目，取代下拉選單模式）
+
+<img src="screenshot/v25.1.9_manual_task.png" width="100%">
+
+</td>
+<td width="50%">
+
+**手動任務「更改名稱」**（原理與 sn_list.txt 的 `<重新命名>` 標籤相同）
+
+<img src="screenshot/v25.1.9_manual_rename.png" width="100%">
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+**掃描集數：大量集數自動摺疊**（超過 20 話自動分區摺疊，標題即時顯示已勾選數量）
+
+<img src="screenshot/v25.1.9_episode_scan_collapse.png" width="100%">
+
+</td>
+<td width="50%">
+
+**取得當前新番更新時間**：執行前會清楚說明行為並二次確認
+
+<img src="screenshot/v25.1.9_schedule_scan_confirm.png" width="100%">
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+**取得當前新番更新時間**：查詢進度（依序對 sn_list.txt 每個項目發線上查詢）
+
+<img src="screenshot/v25.1.9_schedule_scan_progress.png" width="100%">
+
+</td>
+<td width="50%">
+
+**取得當前新番更新時間**：分析結果（實際查詢到的真實上架時間，可逐項選擇候選時段、自訂或跳過）
+
+<img src="screenshot/v25.1.9_schedule_scan_result.png" width="100%">
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+**重新檢查所有排程更新**：執行前明確告知會暫停所有排程檢查直到下載完成
+
+<img src="screenshot/v25.1.9_full_recheck_confirm.png" width="100%">
+
+</td>
+<td width="50%">
+
+**重新檢查所有排程更新**：總進度條＋個別項目下載進度清單
+
+<img src="screenshot/v25.1.9_full_recheck_progress.png" width="100%">
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+**資料庫整頓改為勾選候選清單**（掃描後列出候選項目讓使用者勾選確認才刪除，不會自動刪除）
+
+<img src="screenshot/v25.1.9_db_cleanup_checklist.png" width="100%">
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+**手動批次下載進度視窗＋失敗清單重試**：個別集數即時進度＋整體進度條，圖中同時示範「已完成／下載中／已暫停(排程下載優先處理中)／失敗重啓中／失敗已放棄／已取消」六種狀態；重試 3 次後最終放棄的集數會列在下方失敗清單，可個別「重試」或「重試所有失敗項目」，footer 另有「終止任務」按鈕可安全終止批次(進行中的那一集會正常跑完)
+
+<img src="screenshot/v25.1.9_manual_batch_progress.png" width="100%">
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+**手動任務「顯示目前工作」救援按鈕**：有批次任務進行中時才會出現，可隨時重新叫出進度視窗（例如誤觸關閉、程式重啟、分頁意外關閉後）
+
+<img src="screenshot/v25.1.9_manual_task_resume_button.png" width="100%">
+
+</td>
+<td width="50%">
+
+**排程下載插隊提示**：手動批次任務進行中若排程檢查找到新更新，會優先處理排程下載，這個提示無法點掉，處理完成後自動收起
+
+<img src="screenshot/v25.1.9_schedule_priority.png" width="100%">
 
 </td>
 </tr>
@@ -348,17 +387,22 @@
 ---
 
 <details>
-<summary><strong>三、容量與速度比較</strong></summary>
+<summary><strong>三、速度、功能與安全性比較</strong></summary>
 
 本客製版真正的強項，是**放著長時間無人看管也能穩定把番劇準時抓下來**：裝置身分持久化、異常自動重試、排程漏抓一鍵補齊，這些機制大幅減少需要人工排查、手動重啟才能恢復下載的情況，讓自動化整體更省心、更少中斷。檔案體積與單一集數的下載速度則跟官方版接近，以下如實列出，不做誇大宣稱：
 
-| 項目 | 官方 v24.6 | 本客製版 v25.1.8 | 說明 |
+| 項目 | 官方 v24.6 | 本客製版 v25.1.9 | 說明 |
 |---|---|---|---|
 | 因裝置驗證異常（`code=1007`）而卡住、需要人工介入的頻率 | 每次下載/重試都會申請新裝置ID，短時間內容易被判定為多裝置異常使用；一旦觸發異常沒有自動換裝置ID的機制，需自行手動排查 | 裝置ID持久化＋過期自動偵測＋觸發異常時自動換新ID重試；自訂排程找到更新後若下載失敗也會自動重新排入隊列重試，最多追蹤 2 小時（詳見上方「排程下載穩定性與批次補救」） | **這是本版最直接的方便之處**：長時間無人看管的自動化情境下，需要人工重啟/排查的次數明顯減少，整批更新能更穩定地在背景自己跑完 |
 | 排程漏抓的補救方式 | 沒有對應機制，只能等下次排程時段或手動逐一重新觸發 | 一鍵「重新檢查所有排程更新」，立即對全部項目重新檢查並自動排入下載，進度視覺化呈現 | 程式離線一段時間、或排程剛好沒偵測到更新時，不用逐一手動排查是哪部作品漏抓，也不用等到下週同一時段 |
 | 手動批次下載中途當機/斷電的恢復方式 | 沒有手動批次下載的概念(只能整批單次觸發、無進度紀錄)，中斷後無法得知哪些已完成，通常得整批重新來過 | 每集下載成功即時記錄進 `aniGamer.db`（v25.1.8 起改由資料庫儲存，之前為 `manual_batch_tasks.json`），重啟後自動跳過已完成的集數，只補齊當機當下仍在下載或已放棄的部分；失敗集數可個別或整批重試，不會永久遺失 | 集數多的長篇作品意外中斷時，不用再擔心重複下載已完成的集數，浪費頻寬與時間 |
 | 打包後體積 | 使用 `pyhttpx`（純 Python 實作），官方發布的 Windows 版壓縮包約 30MB | 改用 `curl_cffi` 後，內含一份編譯過的 `libcurl-impersonate` 執行檔，本機打包後 `aniGamerPlus.exe` 約 24MB，連同 Dashboard 等隨附檔案整包約 29MB | 體積略增是換取更貼近真實瀏覽器 TLS/JA3 指紋（降低被動畫瘋／Cloudflare 判定為異常流量風險）的代價，如實告知，不宣稱本版檔案更小 |
 | 單集影片下載速度 | 取決於動畫瘋 CDN 與使用者頻寬 | 與官方版相同 | 兩者都是把 m3u8／影片分段交給 ffmpeg 或分段下載器處理，實際傳輸速率由 CDN／網路狀況決定，換 HTTP 請求函式庫不會讓單一集數的下載變快，這裡不做誇大宣稱 |
+| Web 控制面板身分驗證 | 密碼保護僅靠瀏覽器原生 HTTP Basic Auth 彈出視窗，登入狀態不受伺服器控管 | 自訂登入頁，帳號密碼比對後以伺服器端 session 保存登入狀態，重啟程式不會被強制登出 | 體驗更一致，也不依賴瀏覽器自身對 Basic Auth 的實作差異 |
+| 跨站請求偽造（CSRF）防護 | 無，`/uploadConfig`、`/manualTask` 等寫入型 API 未驗證請求來源 | 寫入型 API 驗證 `X-Requested-With` 標頭，非透過網頁本身發出的請求會被拒絕 | 降低面板對外開放時被第三方網頁誘導發出惡意請求（例如偷改設定、偷加下載任務）的風險 |
+| 未設密碼時的風險提示 | 無 | 面板開放外部訪問但未啟用密碼保護時，啟動時主動印出警告 | 提醒使用者避免面板在無密碼保護下直接暴露在公網 |
+| Cookie／Token／Webhook 等敏感欄位 | 僅能直接編輯 `config.json`／`cookie.txt` 純文字檔，內容全程明文 | Web 面板一律遮罩顯示（Cookie／JA3／Akamai／Telegram Token／Discord Webhook／Chat ID），伺服器端也不會把明文值回傳給前端；v25.1.9 新增的通知發送歷史同樣只記錄組好的通知內容，不記錄憑證本身 | 面板不慎被他人看到畫面、或分享畫面截圖時，不會連帶外洩可直接冒用的憑證 |
+| 通知內容可控性 | 通知文字寫死在程式碼裡，且 Telegram 訊息未做 URL 編碼，中文/換行內容可能送出失敗 | 通知模板可自訂（v25.1.9），Telegram 改走 POST + JSON 傳遞內容，不會因中文或特殊字元送出失敗 | 除了體驗更好，結構化傳遞方式也比字串直接接在 URL 後面更不容易因為未跳脫的內容造成請求本身出錯 |
 
 </details>
 
@@ -375,6 +419,7 @@
 - **v25.1.6**：新增「監視公告」動態排程調整功能、新增手動任務重新命名、修正資料庫整頓與 sn_list 清理誤用名稱比對導致的誤刪問題、資料庫整頓改為勾選候選清單確認（[詳細內容](RELEASE_NOTES_v25.1.6.md)）
 - **v25.1.7**：修正手動任務並發/冷卻限制與 cookie 刷新競爭問題、修正「任務」頁添加手動任務彈窗為缺少新功能的舊版複製品、新增手動批次下載進度視窗與失敗清單重試、新增手動任務救援(顯示目前工作)／終止任務／排程下載插隊優先處理、新增程式啟動時自動清理殘留暫存檔、設定頁與登入頁美化(目錄瀏覽器、摺疊收納、品牌標題)（[詳細內容](RELEASE_NOTES_v25.1.7.md)）
 - **v25.1.8**：`config.json`／`sn_list.txt`／`cookie.txt`／`device_id.txt`／`dashboard_secret.key`／手動任務暫存檔全部整併進 `aniGamer.db`，根除斷電/當機導致設定檔寫到一半損毀成亂碼的問題；新增「快速取得 Cookie/UA・JA3・Akamai」一鍵擷取工具、啟動緊急修復機制、Telegram/Discord 共用的「通知類別」開關與測試工具；修正 Telegram 通知在無互動紀錄時誤判成「Token 無效」及中文訊息亂碼的問題；更新檢查改指向客製版自己的 repo（[詳細內容](RELEASE_NOTES_v25.1.8.md)）
+- **v25.1.9**：新增「通知模板」自訂功能（11 種通知類別可自訂文字內容，Telegram HTML 標籤自動轉換 Discord Markdown）與「發送歷史」查詢；修正 Telegram 通知格式標籤未套用 `parse_mode=HTML` 導致標籤原樣顯示成文字的問題；設定頁控制項寬度統一、導覽列置中、通知測試結果改用彈窗（[詳細內容](RELEASE_NOTES_v25.1.9.md)，[使用教學](USAGE_GUIDE_v25.1.9.md)）
 
 </details>
 
