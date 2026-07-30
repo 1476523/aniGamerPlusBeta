@@ -1,6 +1,6 @@
 ## v25.1.1
 
-以官方 [v24.6](https://github.com/miyouzi/aniGamerPlus/releases/tag/v24.6) 為基準的客製修改版本。
+以官方 [v24.6](https://github.com/miyouzi/aniGamerPlus/releases/tag/v24.6) 為基準的客製修改版本。<br>
 共 26 項變更，涵蓋反爬蟲穩定性、多項崩潰修正、檔名清理與 sn_list.txt 功能強化。
 
 <details>
@@ -71,6 +71,6 @@
 
 > 以上為此次針對官方 v24.6 原始碼所做的客製修改，未包含官方後續（v24.7 ~ v25.0）自行發布的其他更新內容。
 > 
-> 如果喜歡的可以按下 Star 來表示喜歡
-> 可以給予咖啡表示支持 
+> 如果喜歡的可以按下 Star 來表示喜歡<br>
+> 可以給予咖啡表示支持<br>
 > <a href="https://www.buymeacoffee.com/tocsh" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy SH A Coffee" height="36" width="120"></a>
