@@ -195,3 +195,11 @@
 - 版本號由 v25.2.0 調整為 v25.2.1
 
 </details>
+
+---
+
+> 完整變更歷史（v24.6 → v25.1.9）請參閱先前的 release notes。
+>
+> 如果喜歡的可以按下 Star 來表示喜歡<br>
+> 可以給予咖啡表示支持<br>
+> <a href="https://www.buymeacoffee.com/tocsh" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy SH A Coffee" height="36" width="120"></a>
