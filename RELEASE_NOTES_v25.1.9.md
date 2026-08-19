@@ -5,10 +5,13 @@ Telegram 版可用 HTML 格式標籤（粗體/斜體/底線/刪除線/程式碼/
 儲存時自動轉換成對應的 Discord Markdown 語法，不需要自己維護兩份文字；<br>
 同時新增「發送歷史」查詢功能，可回顧每一則通知實際送出的內容與成功/失敗結果。<br>
 另外修正 Telegram 通知格式標籤先前只會顯示成純文字、不會真的套用格式的問題，並統一了設定頁控制項的寬度排版、導覽列置中，通知測試結果改用彈窗顯示。<br>
-共 8 項變更。
+共 10 項變更。
 
 <details>
-<summary><strong><u>🆕 新功能：通知模板自訂，Telegram HTML 標籤／自動轉換 Discord Markdown（1 項）</u></strong></summary>
+<summary><strong><u>🆕 新功能（2 項）</u></strong></summary>
+
+<details>
+<summary><strong>通知模板自訂，Telegram HTML 標籤／自動轉換 Discord Markdown</strong></summary>
 
 「設定」→「通知設定」新增「通知模板」摺疊區塊，可自訂 11 種通知類別（下載通知 4 項、公告通知 4 項、系統通知 3 項）實際發送的文字內容，<br>
 取代過去寫死在程式碼裡、無法客製化的固定訊息格式。<br>
@@ -27,7 +30,7 @@ Telegram 版可用 HTML 格式標籤（粗體/斜體/底線/刪除線/程式碼/
 </details>
 
 <details>
-<summary><strong><u>🆕 新功能：通知發送歷史（1 項）</u></strong></summary>
+<summary><strong>通知發送歷史</strong></summary>
 
 Telegram／Discord 通知設定區塊各自新增「查看發送歷史」按鈕，跳出「發送歷史」視窗。
 
@@ -39,8 +42,13 @@ Telegram／Discord 通知設定區塊各自新增「查看發送歷史」按鈕�
 
 </details>
 
+</details>
+
 <details>
-<summary><strong><u>🐛 BUG 修正：Telegram 格式標籤先前不會真的套用格式（1 項）</u></strong></summary>
+<summary><strong><u>🐛 BUG 修正（1 項）</u></strong></summary>
+
+<details>
+<summary><strong>Telegram 格式標籤先前不會真的套用格式</strong></summary>
 
 - 修正 Telegram 通知發送時未帶入 `parse_mode=HTML` 參數，導致模板即使用了 `<b>`／`<i>`／`<code>` 等格式標籤，<br>
 Telegram 收到的還是純文字、標籤符號會原樣顯示出來而不是真的變成粗體/斜體/程式碼樣式；<br>
@@ -48,23 +56,65 @@ Telegram 收到的還是純文字、標籤符號會原樣顯示出來而不是�
 
 </details>
 
-<details>
-<summary><strong><u>🔧 其他改善：設定頁控制項寬度統一、導覽列置中、通知測試結果改用彈窗、通知相關細節調整（4 項）</u></strong></summary>
+</details>
 
-- 「設定」頁各區塊的開關（switch）與下拉選單（select）改用 flex 版面統一計算寬度，取代原本不穩定的表格自動排版，修正過去不同欄位開關寬度/間距略有落差的問題；<br>
-「下載設定」區塊部分欄位標籤同步精簡並重新排序/調整寬度，「環境偽裝設定」摺疊行為統一比照「代理設定」「通知設定」「其他」等區塊
+<details>
+<summary><strong><u>🔧 其他改善（6 項）</u></strong></summary>
+
+<details>
+<summary><strong>設定頁控制項改用 flex 版面統一寬度</strong></summary>
+
+- 「設定」頁各區塊的開關（switch）與下拉選單（select）改用 flex 版面統一計算寬度，取代原本不穩定的表格自動排版，修正過去不同欄位開關寬度/間距略有落差的問題
+
+</details>
+
+<details>
+<summary><strong>下載設定／環境偽裝設定版面微調</strong></summary>
+
+- 「下載設定」區塊部分欄位標籤同步精簡並重新排序/調整寬度，「環境偽裝設定」摺疊行為統一比照「代理設定」「通知設定」「其他」等區塊
+
+</details>
+
+<details>
+<summary><strong>導覽列置中對齊</strong></summary>
+
 - 導覽列（品牌標題＋選單連結）在「設定」頁與「任務」頁改為置中對齊頁面內容寬度，取代原本靠左對齊的排版
+
+</details>
+
+<details>
+<summary><strong>通知測試結果改用彈窗顯示</strong></summary>
+
 - Telegram「發送測試訊息」／「取得Chat ID」與 Discord「發送測試訊息」按鈕的執行結果，改用自訂結果彈窗顯示，取代原本瀏覽器原生的 `alert()` 彈出視窗
-- Telegram／Discord 通知設定區塊搬移到「通知類別」區塊上方（對應說明文字同步從「下方 Telegram/Discord」改為「上方 Telegram/Discord」）；<br>
-Discord 通知移除寫死的嵌入卡片作者「🔔 動畫瘋」欄位，「發送測試訊息」的標題統一改用與正式通知相同的 `【aniGamerPlus 客製強化版 vX.X.X 消息】` 格式；<br>
-`telebot_chat_id`（Chat ID）欄位加入敏感欄位遮罩清單，比照 Token/Webhook 處理
+
+</details>
+
+<details>
+<summary><strong>Telegram／Discord 通知設定區塊搬移與 Discord 嵌入卡片調整</strong></summary>
+
+- Telegram／Discord 通知設定區塊搬移到「通知類別」區塊上方（對應說明文字同步從「下方 Telegram/Discord」改為「上方 Telegram/Discord」）
+- Discord 通知移除寫死的嵌入卡片作者「🔔 動畫瘋」欄位，「發送測試訊息」的標題統一改用與正式通知相同的 `【aniGamerPlus 客製強化版 vX.X.X 消息】` 格式
+
+</details>
+
+<details>
+<summary><strong>Chat ID 欄位加入敏感遮罩</strong></summary>
+
+- `telebot_chat_id`（Chat ID）欄位加入敏感欄位遮罩清單，比照 Token/Webhook 處理
+
+</details>
 
 </details>
 
 <details>
 <summary><strong><u>📦 版本（1 項）</u></strong></summary>
 
+<details>
+<summary><strong>版本號由 v25.1.8 調整為 v25.1.9</strong></summary>
+
 - 版本號由 v25.1.8 調整為 v25.1.9
+
+</details>
 
 </details>
 

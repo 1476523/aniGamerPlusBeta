@@ -6,16 +6,19 @@
 讓已發送的通知內容不會因為公告較晚出現、或事後手動調整處置而跟實際排程脫節。<br>
 另外進行了一次完整程式碼審查（code review），修正 Dashboard 面板 4 項安全性問題<br>
 （Discord 測試通知可被利用發起 SSRF、`/data/config.json` 明文回傳登入密碼、目錄瀏覽器可繞過系統磁碟機限制、登入頁無嘗試次數限制），<br>
-修正下載排隊／手動任務可能重複啟動、ffmpeg 分段合併失敗仍判定成功、彈幕下載檔案控制代碼未關閉與正規表達式跳脫、<br>
+以及下載排隊／手動任務可能重複啟動、ffmpeg 分段合併失敗仍判定成功、彈幕下載檔案控制代碼未關閉與正規表達式跳脫、<br>
 監視公告集數快取永遠不會更新、「本週同時更新」殭屍排程、Discord 通知模板引用區塊跨行格式跑版、<br>
 多處資料庫連線於例外路徑未正確關閉（其中部分甚至會導致資料庫互斥鎖永久卡死）、<br>
 「快速取得 Cookie／動畫瘋登入設定」彈出的瀏覽器視窗每次登入都會被要求 reCAPTCHA 驗證、<br>
-「發現新版本」通知內容過長時 Telegram 直接回「message is too long」導致整則通知送不出去共 10 項正確性問題，<br>
+「發現新版本」通知內容過長時 Telegram 直接回「message is too long」導致整則通知送不出去，共 15 項 BUG 修正，<br>
 並新增 Windows 版偵測不到 `ffmpeg.exe` 時自動下載一份的功能，不用使用者自行另外準備。<br>
-共 17 項變更。
+共 18 項變更。
 
 <details>
-<summary><strong><u>🆕 新功能：機動調整異動後自動重新發送每日新番通知（1 項）</u></strong></summary>
+<summary><strong><u>🆕 新功能（2 項）</u></strong></summary>
+
+<details>
+<summary><strong>機動調整異動後自動重新發送每日新番通知</strong></summary>
 
 「每日新番通知」原本每天 00:00 只會發送一次，發送之後不管「機動調整」（監視公告觸發的暫停/延期/加更等臨時排程調整）再怎麼變化，<br>
 都不會反映在已經收到的那則通知裡，使用者得自己回頭翻「公告」面板的「機動調整」區塊才會發現內容其實已經過期。<br>
@@ -28,7 +31,7 @@
 </details>
 
 <details>
-<summary><strong><u>🆕 新功能：Windows 版缺少 ffmpeg.exe 自動下載（1 項）</u></strong></summary>
+<summary><strong>Windows 版缺少 ffmpeg.exe 自動下載</strong></summary>
 
 過去 Windows 版若系統 `PATH` 與 `aniGamerPlus.exe` 所在目錄都找不到 `ffmpeg.exe`，下載會直接失敗並提示「本項目依賴於ffmpeg，但ffmpeg未找到」，<br>
 使用者得自行前往官方網站下載、解壓縮並手動放進正確資料夾。<br>
@@ -44,8 +47,13 @@
 
 </details>
 
+</details>
+
 <details>
-<summary><strong><u>🔒 安全性修正：Discord 測試通知可被利用發起 SSRF（1 項）</u></strong></summary>
+<summary><strong><u>🐛 BUG 修正（15 項）</u></strong></summary>
+
+<details>
+<summary><strong>Discord 測試通知可被利用發起 SSRF</strong></summary>
 
 - 「通知設定」的 Discord「發送測試訊息」按鈕，後端 `Config.send_test_notification()` 過去完全不驗證使用者透過輸入框帶入的網址格式，<br>
 直接拿去當成 Discord Webhook 網址發出請求，且非成功回應的內容會原樣包進錯誤訊息回傳給前端。<br>
@@ -55,7 +63,7 @@
 </details>
 
 <details>
-<summary><strong><u>🔒 安全性修正：`/data/config.json` 明文回傳 Dashboard 登入密碼（1 項）</u></strong></summary>
+<summary><strong>`/data/config.json` 明文回傳 Dashboard 登入密碼</strong></summary>
 
 - `/data/config.json`（設定頁載入設定、以及「讀取其他版本設定檔」比對功能共用的端點）過去會把整份設定原樣回傳，<br>
 包含 `dashboard.password`（Dashboard 自身登入密碼，預設值即為 `admin`）的明文內容——跟同一支檔案裡 `dashboard_login_status()`「只回傳帳號、絕不回傳密碼」的既有設計原則互相矛盾，<br>
@@ -66,7 +74,7 @@ Telegram Token／Discord Webhook 等其他敏感欄位維持原樣（設定頁�
 </details>
 
 <details>
-<summary><strong><u>🔒 安全性修正：目錄瀏覽器可繞過系統磁碟機限制存取任意路徑（1 項）</u></strong></summary>
+<summary><strong>目錄瀏覽器可繞過系統磁碟機限制存取任意路徑</strong></summary>
 
 - 「瀏覽...」目錄瀏覽器原本的安全限制只比對請求路徑是否**恰好等於**系統磁碟機根目錄（例如 `C:\`），<br>
 只要換成任何子目錄（例如直接帶入 `?path=C:\Windows\System32\config` 或 `?path=C:\Users\其他帳號`），檢查完全不會觸發，會照常列出該目錄底下的完整內容，<br>
@@ -76,7 +84,7 @@ Telegram Token／Discord Webhook 等其他敏感欄位維持原樣（設定頁�
 </details>
 
 <details>
-<summary><strong><u>🔒 安全性修正：登入頁新增嘗試次數限制（1 項）</u></strong></summary>
+<summary><strong>登入頁新增嘗試次數限制</strong></summary>
 
 - `/login` 過去對帳號密碼比對沒有任何嘗試次數限制、延遲或鎖定機制，搭配 Dashboard 密碼預設值 `admin`，面板對外開放時容易被暴力破解
 - 現在同一個來源 IP 連續登入失敗達 5 次會鎖定 60 秒，鎖定期間再次嘗試會直接回覆還需等待的秒數，不會繼續比對帳密；正確登入會清除該 IP 的失敗紀錄
@@ -84,7 +92,7 @@ Telegram Token／Discord Webhook 等其他敏感欄位維持原樣（設定頁�
 </details>
 
 <details>
-<summary><strong><u>🐛 BUG 修正：每日新番通知集數預測全部顯示「第02話」（1 項）</u></strong></summary>
+<summary><strong>每日新番通知集數預測全部顯示「第02話」</strong></summary>
 
 - 「每日新番通知」的「本日排程更新清單」與「機動調整」清單，原本都會附上線上查詢到的「預計集數」，<br>
 但查詢邏輯使用的是 `anime.get_episode()`，這個方法回傳的其實是「查詢時使用的那個 sn，對應頁面本身是第幾集」，<br>
@@ -96,7 +104,7 @@ Telegram Token／Discord Webhook 等其他敏感欄位維持原樣（設定頁�
 </details>
 
 <details>
-<summary><strong><u>🐛 BUG 修正：排程下載可能對同一集數重複啟動下載（1 項）</u></strong></summary>
+<summary><strong>排程下載可能對同一集數重複啟動下載</strong></summary>
 
 - 主迴圈、自訂排程背景執行緒、「重新檢查所有排程更新」、監視公告機動調整這幾條各自獨立的執行緒，最終都會呼叫到同一個 `_start_queued_workers()` 來啟動排隊中的下載任務；<br>
 但「這個 sn 是否已經在下載中」的判斷跟「登記進行中清單」是兩個獨立、沒有鎖保護的操作，剛好在同一輪都看到同一集還沒登記時，就會各自啟動一個下載執行緒同時處理同一集，可能造成檔案損毀，連續失敗次數的計數也可能因為競爭條件漏加，削弱「連續失敗達上限暫停重試」功能的效果
@@ -105,7 +113,7 @@ Telegram Token／Discord Webhook 等其他敏感欄位維持原樣（設定頁�
 </details>
 
 <details>
-<summary><strong><u>🐛 BUG 修正：手動任務可被重複提交（1 項）</u></strong></summary>
+<summary><strong>手動任務可被重複提交</strong></summary>
 
 - `/manualTask` 過去只檢查是否有資料庫整頓等維護作業正在執行，沒有檢查同一個 sn 是否已經有手動任務在跑；<br>
 使用者連點兩次「提交」、或瀏覽器重送同一筆請求，會啟動兩個完全獨立的下載，且後送出的進度紀錄會直接覆蓋掉前一個仍在進行中的紀錄（含終止旗標與即時進度），之後按「終止任務」實際影響到哪一個變得不確定
@@ -114,7 +122,7 @@ Telegram Token／Discord Webhook 等其他敏感欄位維持原樣（設定頁�
 </details>
 
 <details>
-<summary><strong><u>🐛 BUG 修正：ffmpeg 分段下載模式合併失敗仍判定為下載成功（1 項）</u></strong></summary>
+<summary><strong>ffmpeg 分段下載模式合併失敗仍判定為下載成功</strong></summary>
 
 - 分段下載模式（`__segment_download_mode`）合併各分段完成後，沒有檢查 ffmpeg 的執行結果就直接刪除舊檔、把合併結果標記成功並發出「下載完成」通知；<br>
 若 ffmpeg 因為壞分段、磁碟已滿等原因非正常結束，會留下一個不完整的檔案，卻仍被當成下載成功，也不會走既有的失敗重試流程
@@ -123,7 +131,7 @@ Telegram Token／Discord Webhook 等其他敏感欄位維持原樣（設定頁�
 </details>
 
 <details>
-<summary><strong><u>🐛 BUG 修正：彈幕下載檔案控制代碼未關閉、線上黑名單字組可能讓整集彈幕下載失敗（1 項）</u></strong></summary>
+<summary><strong>彈幕下載檔案控制代碼未關閉、線上黑名單字組可能讓整集彈幕下載失敗</strong></summary>
 
 - 彈幕下載寫檔沒有用 `with` 開啟，中途拋例外時輸出檔案不會被正確關閉／flush，留下殘缺檔案
 - 彈幕過濾黑名單字組（含從動畫瘋線上抓回來的黑名單，內容不受本地控制）直接串接成一個正規表達式，若字詞剛好含 `(`、`[` 等正規表達式特殊字元，會讓整段編譯直接拋出例外，導致該集彈幕下載失敗，且每次重跑都會重複發生直到手動移除該字
@@ -132,7 +140,7 @@ Telegram Token／Discord Webhook 等其他敏感欄位維持原樣（設定頁�
 </details>
 
 <details>
-<summary><strong><u>🐛 BUG 修正：監視公告集數快取永遠不會更新（1 項）</u></strong></summary>
+<summary><strong>監視公告集數快取永遠不會更新</strong></summary>
 
 - 監視公告比對追蹤作品時用來加速的集數快取，一旦建立就永久保留、不會過期；追蹤中的作品出新一集後，後續公告比對到新集數的 sn 會因為不在舊快取裡而被誤判成「無法判斷」，即使該作品明明有在追蹤
 - 現在加上 1 小時有效期，過期後會重新查詢，公告比對排程性質本來就不需要即時到秒，慢個一小時內發現新集數可接受
@@ -140,7 +148,7 @@ Telegram Token／Discord Webhook 等其他敏感欄位維持原樣（設定頁�
 </details>
 
 <details>
-<summary><strong><u>🐛 BUG 修正：「本週同時更新」處置可能產生殭屍排程（1 項）</u></strong></summary>
+<summary><strong>「本週同時更新」處置可能產生殭屍排程</strong></summary>
 
 - 「操作處置」的「本週提前更新」「本週延後更新」都會驗證公告是否有解析出明確時間，沒有就提示改用「自訂更新時間」；<br>
 但「本週同時更新」漏了同樣的驗證，沒解析出時間時仍會直接寫入一筆 `check_time` 是空值的臨時排程紀錄，這筆紀錄之後會被排程檢查邏輯永久跳過、既不會標記完成也不會過期，變成畫面上看不到、系統也不會再處理的殭屍排程
@@ -149,7 +157,7 @@ Telegram Token／Discord Webhook 等其他敏感欄位維持原樣（設定頁�
 </details>
 
 <details>
-<summary><strong><u>🐛 BUG 修正：Discord 通知模板引用區塊包住跨行粗體／斜體會顯示成裸符號（1 項）</u></strong></summary>
+<summary><strong>Discord 通知模板引用區塊包住跨行粗體／斜體會顯示成裸符號</strong></summary>
 
 - 通知模板存檔時會自動把 Telegram HTML 標籤轉換成 Discord Markdown 語法，但轉換規則表原本先處理 `<blockquote>` 引用區塊（在每一行行首加上 `> ` 前綴），<br>
 之後才處理跨行的 `<b>`／`<i>` 等格式標籤，導致格式標記符號（`**`／`*` 等）被插在剛好橫跨兩個引用行、被行首 `> ` 前綴打斷的位置，Discord 端最終顯示成沒有正確渲染的裸符號而不是粗體／斜體
@@ -158,7 +166,7 @@ Telegram Token／Discord Webhook 等其他敏感欄位維持原樣（設定頁�
 </details>
 
 <details>
-<summary><strong><u>🐛 BUG 修正：多處 sqlite3 資料庫連線在例外路徑未正確關閉（1 項）</u></strong></summary>
+<summary><strong>多處 sqlite3 資料庫連線在例外路徑未正確關閉</strong></summary>
 
 - 分散在 `Config.py`／`AccountVault.py`／`GossipDB.py`／`NotifyDB.py`／`Gossip.py`／`aniGamerPlus.py` 共數十處資料庫存取，<br>
 都是「開連線 → 執行 → 關連線」直接寫成一直線，中途任何一步拋出例外，連線就不會被關閉而洩漏
@@ -169,7 +177,7 @@ Telegram Token／Discord Webhook 等其他敏感欄位維持原樣（設定頁�
 </details>
 
 <details>
-<summary><strong><u>🐛 BUG 修正：快速取得 Cookie／動畫瘋登入設定彈出視窗每次登入都要求 reCAPTCHA 驗證（1 項）</u></strong></summary>
+<summary><strong>快速取得 Cookie／動畫瘋登入設定彈出視窗每次登入都要求 reCAPTCHA 驗證</strong></summary>
 
 - 有使用者回報「快速取得 Cookie」／「動畫瘋登入設定」彈出的瀏覽器視窗，每次登入動畫瘋都會被要求 reCAPTCHA 驗證，<br>
 但手動另外開一個無痕視窗（`chrome.exe --incognito`）登入同一個帳號則不會。推測最可能的原因是這個視窗全程透過 Chrome DevTools Protocol（CDP）操作頁面<br>
@@ -181,7 +189,7 @@ Telegram Token／Discord Webhook 等其他敏感欄位維持原樣（設定頁�
 </details>
 
 <details>
-<summary><strong><u>🐛 BUG 修正：「發現新版本」通知內容過長時 Telegram 直接送不出去（1 項）</u></strong></summary>
+<summary><strong>「發現新版本」通知內容過長時 Telegram 直接送不出去</strong></summary>
 
 - 「發現新版本」系統通知會把 GitHub release notes 全文塞進通知內容，過長時 Telegram 直接回「Bad Request: message is too long」，<br>
 整則通知（含標題與版本資訊）完全送不出去。`<blockquote expandable>` 只是 Telegram 用戶端「顯示」時預設收合，<br>
@@ -191,10 +199,17 @@ Telegram Token／Discord Webhook 等其他敏感欄位維持原樣（設定頁�
 
 </details>
 
+</details>
+
 <details>
 <summary><strong><u>📦 版本（1 項）</u></strong></summary>
 
+<details>
+<summary><strong>版本號由 v25.2.1 調整為 v25.2.2</strong></summary>
+
 - 版本號由 v25.2.1 調整為 v25.2.2
+
+</details>
 
 </details>
 

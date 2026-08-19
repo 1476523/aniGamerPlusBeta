@@ -11,7 +11,10 @@
 共 17 項變更。
 
 <details>
-<summary><strong><u>🆕 新功能：Telegram 通知 Bad Gateway 自動重試 + 通知發送歷史手動重試按鈕（1 項）</u></strong></summary>
+<summary><strong><u>🆕 新功能（2 項）</u></strong></summary>
+
+<details>
+<summary><strong>Telegram 通知 Bad Gateway 自動重試 + 通知發送歷史手動重試按鈕</strong></summary>
 
 - Telegram 伺服器端偶爾會回應 502 Bad Gateway（例如「每日新番通知」發送當下剛好遇到 Telegram 那邊短暫不穩），<br>
 過去遇到這個情況會直接判定失敗，整則通知就這樣送不出去，使用者只能等下一次觸發時機才會再收到
@@ -22,7 +25,7 @@
 </details>
 
 <details>
-<summary><strong><u>🆕 新功能：新增「已取消」通知類別，修正終止任務後誤發送「下載完成」通知（1 項）</u></strong></summary>
+<summary><strong>新增「已取消」通知類別，修正終止任務後誤發送「下載完成」通知</strong></summary>
 
 - 過去不論下載是否真的成功，任務結束後都會無條件送出「下載完成 @file_size@ MB」的通知——分段失敗、<br>
 ffmpeg 合併失敗、使用者主動終止等情況都不會被攔下，終止任務後反而會收到一則「下載完成 0MB」這種自相矛盾的通知
@@ -32,8 +35,13 @@ ffmpeg 合併失敗、使用者主動終止等情況都不會被攔下，終止�
 
 </details>
 
+</details>
+
 <details>
-<summary><strong><u>🐛 BUG 修正：動畫瘋停用舊版影片來源 API，導致所有下載全面失敗（1 項）</u></strong></summary>
+<summary><strong><u>🐛 BUG 修正（11 項）</u></strong></summary>
+
+<details>
+<summary><strong>動畫瘋停用舊版影片來源 API，導致所有下載全面失敗</strong></summary>
 
 - 動畫瘋已將網頁播放器改用新端點取得影片播放清單，舊版 `ani.gamer.com.tw/ajax/m3u8.php` 固定回應 `404 File not found`，<br>
 不論哪一部作品、哪一集都無法下載，且跟 Cookie／裝置ID是否新鮮完全無關（實測換裝置ID、重新登入都無效）
@@ -45,7 +53,7 @@ ffmpeg 合併失敗、使用者主動終止等情況都不會被攔下，終止�
 </details>
 
 <details>
-<summary><strong><u>🐛 BUG 修正：登入 Cookie 刷新節流閥誤丟合法輪換，長時間下 Cookie 容易失效（1 項）</u></strong></summary>
+<summary><strong>登入 Cookie 刷新節流閥誤丟合法輪換，長時間下 Cookie 容易失效</strong></summary>
 
 - 動畫瘋的登入憑證（BAHARUNE）會不定期輪換，程式收到新值時原本會限制「同一時間只允許一個刷新動作執行」，<br>
 避免多執行緒併發時反覆寫檔、重複打首頁——但這個限制連「把新值套用到當下執行緒自己」都一併擋住，<br>
@@ -58,7 +66,7 @@ ffmpeg 合併失敗、使用者主動終止等情況都不會被攔下，終止�
 </details>
 
 <details>
-<summary><strong><u>🐛 BUG 修正：排程下載連續失敗暫停後，通知每 30 秒重複洗版（1 項）</u></strong></summary>
+<summary><strong>排程下載連續失敗暫停後，通知每 30 秒重複洗版</strong></summary>
 
 - 排程下載連續失敗達上限而暫停自動重試後，負責持續追蹤下載結果的背景機制仍會每 30 秒重新發現、重新排入這個<br>
 已暫停的項目，被擋下時又重複印出同一則「已連續失敗，暫停自動重試」訊息，最長可洗版到 2 小時追蹤逾時為止
@@ -67,7 +75,7 @@ ffmpeg 合併失敗、使用者主動終止等情況都不會被攔下，終止�
 </details>
 
 <details>
-<summary><strong><u>🐛 BUG 修正：機動調整可能於目標時間到達前就提前失效（1 項）</u></strong></summary>
+<summary><strong>機動調整可能於目標時間到達前就提前失效</strong></summary>
 
 - 「操作處置」套用時間覆蓋（例如「本週延後更新」）時，2 小時的重試期限原本是從「使用者確認處置的當下」起算，<br>
 但公告偵測到、跟公告寫的目標時間往往差很多個小時（例如中午就看到公告寫「今晚 19:30 更新」）——目標時間都還沒到，<br>
@@ -77,7 +85,7 @@ ffmpeg 合併失敗、使用者主動終止等情況都不會被攔下，終止�
 </details>
 
 <details>
-<summary><strong><u>🐛 BUG 修正：每日新番通知「本日排程更新」與「機動調整異動」時間顯示矛盾（1 項）</u></strong></summary>
+<summary><strong>每日新番通知「本日排程更新」與「機動調整異動」時間顯示矛盾</strong></summary>
 
 - 「每日新番通知」的「本日排程更新」區塊過去只讀取 `sn_list.txt` 固定的排程時間，若當時有生效中的「本週延後/提前更新」<br>
 調整，下方「機動調整異動」區塊會正確顯示新時間，但上方「本日排程更新」仍顯示舊時間，同一則通知出現兩個矛盾的時間
@@ -87,7 +95,7 @@ ffmpeg 合併失敗、使用者主動終止等情況都不會被攔下，終止�
 </details>
 
 <details>
-<summary><strong><u>🐛 BUG 修正：已從動畫瘋公告頁撤下的公告，仍永遠卡在「操作處置」清單（1 項）</u></strong></summary>
+<summary><strong>已從動畫瘋公告頁撤下的公告，仍永遠卡在「操作處置」清單</strong></summary>
 
 - 使用者尚未手動確認處置的公告子句，若動畫瘋把該則公告從頁面撤下，過去的解析邏輯沒有拿「這次還看得到哪些子句」<br>
 去比對「先前還在等待處置的舊子事件」，導致公告明明已經撤下，「操作處置」清單與機動調整臨時排程卻永遠不會被清除
@@ -98,7 +106,7 @@ ffmpeg 合併失敗、使用者主動終止等情況都不會被攔下，終止�
 </details>
 
 <details>
-<summary><strong><u>🐛 BUG 修正：手動重試結果彈窗被通知歷史視窗蓋住看不到（1 項）</u></strong></summary>
+<summary><strong>手動重試結果彈窗被通知歷史視窗蓋住看不到</strong></summary>
 
 - 「通知發送歷史」本身是一個彈出視窗（modal），按下「手動重試」後結果原本用另一個彈窗顯示，<br>
 但 Bootstrap 沒有自動處理多層彈窗的堆疊順序，新彈窗會被蓋在「發送歷史」視窗底下，畫面上完全看不到，得先關掉歷史視窗才會發現其實已經跳出來過
@@ -107,7 +115,7 @@ ffmpeg 合併失敗、使用者主動終止等情況都不會被攔下，終止�
 </details>
 
 <details>
-<summary><strong><u>🐛 BUG 修正：終止手動任務時，背景執行緒噴出未捕捉的 KeyError（1 項）</u></strong></summary>
+<summary><strong>終止手動任務時，背景執行緒噴出未捕捉的 KeyError</strong></summary>
 
 - 終止任務的設計是不強制中斷已經在下載中的分段執行緒，讓它們各自跑完釋放資源即可；但這些執行緒事後回頭<br>
 更新下載進度時，對應的監控項目已經被終止流程清掉了，於是拋出未捕捉的 `KeyError`，被主控台印成「未預期錯誤」
@@ -116,7 +124,7 @@ ffmpeg 合併失敗、使用者主動終止等情況都不會被攔下，終止�
 </details>
 
 <details>
-<summary><strong><u>🐛 BUG 修正：終止任務時反應遲緩，且會遺留下載到一半的暫存檔案（1 項）</u></strong></summary>
+<summary><strong>終止任務時反應遲緩，且會遺留下載到一半的暫存檔案</strong></summary>
 
 - 終止任務原本只在少數固定檢查點才會生效：等待「解鎖影片」交握鎖時（同一時間只允許一部影片交握，其餘全部排隊）、<br>
 非VIP廣告等待（整段 20~25 秒 `sleep`）都無法中途放棄——批次任務排隊等交握的集數，就算已經被終止，也得先乾等到真的<br>
@@ -131,7 +139,7 @@ ffmpeg 合併失敗、使用者主動終止等情況都不會被攔下，終止�
 </details>
 
 <details>
-<summary><strong><u>🐛 BUG 修正：手動任務進度視窗開著時，終止確認框被壓在下面看不到（1 項）</u></strong></summary>
+<summary><strong>手動任務進度視窗開著時，終止確認框被壓在下面看不到</strong></summary>
 
 - 跟上面「手動重試結果彈窗」是同一種成因：Bootstrap 不會自動處理多層彈窗的堆疊順序，同時開兩個彈窗時，<br>
 疊在最上層的其實是 HTML 裡宣告位置比較後面的那個，跟實際開啟先後順序無關，導致批次任務進度視窗開著時，<br>
@@ -141,15 +149,20 @@ ffmpeg 合併失敗、使用者主動終止等情況都不會被攔下，終止�
 </details>
 
 <details>
-<summary><strong><u>🐛 BUG 修正：單集手動任務「終止任務」按鈕沒有反應（1 項）</u></strong></summary>
+<summary><strong>單集手動任務「終止任務」按鈕沒有反應</strong></summary>
 
 - 後端的終止功能其實一直都有，但前端負責呼叫的函式從未寫過，按下按鈕只會在瀏覽器主控台默默報錯，畫面上完全看不出來
 - 補上這支前端函式，行為與批次任務的終止按鈕一致（會先跳出確認框）
 
 </details>
 
+</details>
+
 <details>
-<summary><strong><u>🔧 其他改善：新增登入 Cookie 背景保溫機制（1 項）</u></strong></summary>
+<summary><strong><u>🔧 其他改善（3 項）</u></strong></summary>
+
+<details>
+<summary><strong>新增登入 Cookie 背景保溫機制</strong></summary>
 
 - 長時間沒有任何下載/排程檢查時，登入憑證可能因閒置過久被動畫瘋判定 session 已過期，且無法透過原本的<br>
 刷新流程救回，只能手動重新登入
@@ -159,14 +172,14 @@ ffmpeg 合併失敗、使用者主動終止等情況都不會被攔下，終止�
 </details>
 
 <details>
-<summary><strong><u>🔧 其他改善：ffmpeg.exe 自動下載來源網址更新（1 項）</u></strong></summary>
+<summary><strong>ffmpeg.exe 自動下載來源網址更新</strong></summary>
 
 - v25.2.2 新增的「偵測不到 ffmpeg.exe 時自動下載」功能，原本設定的下載來源網址已失效，更新為新的下載位置
 
 </details>
 
 <details>
-<summary><strong><u>🔧 其他改善：「掃描集數」結果清單過長時新增捲軸（1 項）</u></strong></summary>
+<summary><strong>「掃描集數」結果清單過長時新增捲軸</strong></summary>
 
 - 手動任務「掃描集數」列出的集數清單（本篇／中文配音／特別篇等分類），作品集數很多時會把整個彈出視窗撐得很高、<br>
 超出畫面高度，得先捲動整個瀏覽器視窗才看得到下方其他分類或操作按鈕
@@ -174,10 +187,17 @@ ffmpeg 合併失敗、使用者主動終止等情況都不會被攔下，終止�
 
 </details>
 
+</details>
+
 <details>
 <summary><strong><u>📦 版本（1 項）</u></strong></summary>
 
+<details>
+<summary><strong>版本號由 v25.2.2 調整為 v25.2.3</strong></summary>
+
 - 版本號由 v25.2.2 調整為 v25.2.3
+
+</details>
 
 </details>
 
